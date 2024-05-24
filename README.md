@@ -145,17 +145,124 @@ aws s3 cp s3://diva360/raw_data/synced/2023-05-03_session_blue_car_synced.tar.gz
 
 ## Benchmark Methods
 Please consider citing these methods if you think they are helpful!
+
 [I-NGP](https://github.com/coreqode/instant-ngp)
 
 [MixVoxels](https://github.com/PPPayson/mixvoxels_brics.git)
 
 [K-Planes](https://github.com/johnnylu305/K-Planes-BRICS/tree/kplanes_brics)
 
-## Preprocessing
-You can also preprocess it yourself.
-### Take blue car as an example.
+## Using existing data
+### Take the blue car as an example.
+```
+# download processed data
+aws s3 cp s3://diva360/processed_data/blue_car/ . --recursive --no-sign-request --exclude "*" --include "transforms*"
+aws s3 cp s3://diva360/processed_data/blue_car/frames_1.tar.gz ./ --no-sign-request
+
+# please refer to the directory structure section
+cp -r frames_1 ../code/DiVa360/assets/objects/blue_car/
+cp transforms_* ../code/DiVa360/assets/objects/blue_car/
 ```
 
+## Run Benchmark
+Please install the methods from in the Benchmark Methods section
+
+### I-NPG
+```
+# Train 
+sh objects_scripts/blue_car/train_ingp.sh 
+
+# Test 
+sh objects_scripts/blue_car/test_ingp.sh
+
+# Render
+sh objects_scripts/blue_car/traj_ingp_hr.sh
+```
+
+### MixVoxels
+```
+# Train 
+sh objects_scripts/blue_car/train_mixvoxels.sh
+
+# Test and Benchmark
+sh objects_scripts/blue_car/eval_mixvoxels.sh
+
+# Render
+sh objects_scripts/blue_car/render_mixvoxels.sh
+```
+
+### K-Planes
+```
+# Train 
+sh objects_scripts/blue_car/train_kplanes.sh
+
+# Test
+sh objects_scripts/blue_car/test_kplanes.sh
+
+# Render
+sh objects_scripts/blue_car/render_kplanes.sh
+
+# Benchmark
+python utils/move_kplanes_test.py --root assets/objects/ --name blue_car
+python utils/benchmark.py --root assets/objects/blue_car/ --start 0 --num_frames 150 --target_path kplanes/test --wh_bg
+
+```
+
+## Preprocessing
+You can also preprocess raw data by yourself.
+### Take the blue car as an example.
+
+Download raw data from s3:
+```
+# list files
+aws s3 ls s3://diva360/raw_data/synced/ --no-sign-request
+
+# download raw data
+aws s3 cp s3://diva360/raw_data/synced/2023-05-03_session_blue_car_synced.tar.gz ./ --no-sign-request
+
+# decompress file
+gzip -d 2023-05-03_session_blue_car_synced.tar.gz
+tar -xf 2023-05-03_session_blue_car_synced.tar	
+
+# extract frames from the video
+object_scripts/blue_car/move.sh [DATA_PATH]/2023-05-03_session_blue_car_synced/synced
+```
+
+Camera pose estimation
+```
+# download data for pose estimation
+aws s3 cp s3://diva360/raw_data/2023-04-29_session_calibration_2.tar ./ --no-sign-request
+tar -xf 2023-04-29_session_calibration_2.tar
+
+# if you are using long-duration object, download this one instead
+aws s3 cp s3://diva360/raw_data_long/2023-10-21_session_calib.tar.gz ./ --no-sign-request
+gzip -d 2023-10-21_session_calib.tar.gz
+tar -xf 2023-10-21_session_calib.tar
+
+# run pose estimation with colmap version 3.8
+python src/colmap_calib.py -r [DATA_PATH]/2023-04-29_session_calibration_2
+
+# please refer to the directory structure section
+mv [DATA_PATH]/2023-04-29_session_calibration_2/params.txt assets/calib_short/
+```
+
+Camera pose refinement through I-NGP (please compile the I-NGP from the benchmark method)
+```
+# manually segment one frame and put it in calib_short
+python src/refine_params.py --root_dir assets/calib_short/ --optimize_params --network ../models/instant-ngp/configs/nerf/base.json --roi 0.5 0.45 0.5 --n_steps 10000 --aabb_scale 4 --face_to_cam --gui
+
+# optim_param.txt to transform.json
+python utils/params2nerf.py --root assets/calib_short/ --use_kp
+```
+
+Segmentation
+```
+sh objects_scripts/blue_car/segment_frame.sh
+```
+
+Undistortion
+```
+sh objects_scripts/blue_car/undistortion.sh
 ```
 
 # Citation
