@@ -172,7 +172,7 @@ Please install the methods from in the Benchmark Methods section
 # Train 
 sh objects_scripts/blue_car/train_ingp.sh 
 
-# Test 
+# Test and Benchmark
 sh objects_scripts/blue_car/test_ingp.sh
 
 # Render
@@ -184,7 +184,7 @@ sh objects_scripts/blue_car/traj_ingp_hr.sh
 # Train 
 sh objects_scripts/blue_car/train_mixvoxels.sh
 
-# Test and Benchmark
+# Test
 sh objects_scripts/blue_car/eval_mixvoxels.sh
 
 # Render
@@ -264,6 +264,29 @@ Undistortion
 ```
 sh objects_scripts/blue_car/undistortion.sh
 ```
+
+## Frequently Asked Questions (FAQ)
+
+__Q:__ What is the coordination system of the transform.json?
+
+__A:__ It follows the original NeRF coordinate system. The transform.json follows the I-NGP style, which can be used like the fox example. Please check [nerfstudio](https://docs.nerf.studio/quickstart/data_conventions.html) for the details.
+
+##
+
+__Q:__ How can I use it on other methods?
+
+__A:__ We suggest using llff or blender dataloader if the codebase supports it. The codebase should support the intrinsic matrix per camera.
+
+##
+
+__Q:__ Why does the I-NGP segmentation not work well?
+
+__A:__ This is common situation. Tuning the parameter can solve the problem most of the time. We point out the limitations in the paper. hour_glass, plasma_ball, and plasma_ball_clip are segmented manually.
+
+
+# TODO
+
+- [ ] add Gaussian Splatting to the benchmark
 
 # Citation
 
