@@ -15,6 +15,8 @@ Cheng-You Lu<sup>1*</sup>, Peisen Zhou<sup>1*</sup>, Angela Xing<sup>1*</sup>, C
 
 We propose DiVa360, a real-world 360° dynamic visual dataset containing 21 object-centric sequences categorized by different motion types, 25 intricate hand-object interaction sequences, and 8 long-duration sequences for 17.4M frames.
 
+https://github.com/brown-ivl/DiVa360/assets/22707984/4ac89255-40d7-4754-bb78-99b96c76852f
+
 ## Environment
 
 ## Directory Structure
@@ -282,6 +284,12 @@ __A:__ We suggest using llff or blender dataloader if the codebase supports it. 
 __Q:__ Why does the I-NGP segmentation not work well?
 
 __A:__ This is common situation. Tuning the parameter can solve the problem most of the time. We point out the limitations in the paper. hour_glass, plasma_ball, and plasma_ball_clip are segmented manually.
+
+##
+
+__Q:__ Do I need to manually segment each object's first frame?
+
+__A:__ No, you can reuse the refined pose for other objects captured on the same date.
 
 
 # TODO
