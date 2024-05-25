@@ -18,7 +18,11 @@ We propose DiVa360, a real-world 360° dynamic visual dataset containing 21 ob
 https://github.com/brown-ivl/DiVa360/assets/22707984/4ac89255-40d7-4754-bb78-99b96c76852f
 
 ## Environment
-
+Build conda environment using ```environment.yml```. Then follow instructions in each benchmark methods to install required packages. 
+```
+conda env create --file environment.yml
+conda activate diva360_venv
+```
 ## Directory Structure
 <details>
 <summary>Example Directory Structure</summary>
@@ -186,7 +190,7 @@ sh objects_scripts/blue_car/traj_ingp_hr.sh
 # Train 
 sh objects_scripts/blue_car/train_mixvoxels.sh
 
-# Test
+# Test and Benchmark
 sh objects_scripts/blue_car/eval_mixvoxels.sh
 
 # Render
