@@ -144,7 +144,7 @@ aws s3 cp s3://diva360/raw_data/synced/2023-05-03_session_blue_car_synced.tar.gz
 ```
 
 ## Benchmark Methods
-Please consider citing these methods if you think they are helpful!
+Please consider citing these methods if you think they are helpful! Below are methods modified for DiVa360 benchmarks.
 
 [I-NGP](https://github.com/coreqode/instant-ngp)
 
