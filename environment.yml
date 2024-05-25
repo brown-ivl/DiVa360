@@ -1,4 +1,4 @@
-name: /oscar/data/ssrinath/projects/brics_dyscene/diva360_venv
+name: diva360_venv
 channels:
   - conda-forge
   - defaults
