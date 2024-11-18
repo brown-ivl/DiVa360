@@ -125,7 +125,7 @@ conda activate diva360_venv
 ```
 </details>
 
-## Instruction for Downloading DiVa360 from AWS S3
+<!-- ## Instruction for Downloading DiVa360 from AWS S3
 
 ### Download raw data
 ```
@@ -147,7 +147,174 @@ You can download a specific object instead of the whole dataset!
 ```
 aws s3 ls s3://diva360/raw_data/synced/ --no-sign-request
 aws s3 cp s3://diva360/raw_data/synced/2023-05-03_session_blue_car_synced.tar.gz ./ --no-sign-request
+``` -->
+
+## Instruction for Downloading DiVa360 from AWS S3
+### Setup
+We store our dataset on Globus, so to download the data to your local machine, we use Globus Command Line Interface (Globus-CLI) and Globus Connect Personal (GCP). You will first need to install GCP. Follow these intructions depending on your machine: [Mac](https://docs.globus.org/globus-connect-personal/install/mac/), [Windows](https://docs.globus.org/how-to/globus-connect-personal-windows/), [Linux](https://docs.globus.org/how-to/globus-connect-personal-linux/).
+
+Note: When you are installing GCP, you will have to name your collection/endpoint. You are free to name it however you choose, but we suggest naming it "&lt;name&gt; personal machine". 
+
+Next, you will need to install Globus-CLI and login. Run the following commands:
 ```
+pip install globus-cli
+globus login
+```
+This will take you to a login page. You can either log in through a listed institution, through any Google account, or through an ORCID iD. After logging in, you will see a terms of service page. To continue, click "Allow".
+To download the data, you will be copying the data from the DiVa360 endpoint to the endpoint you just created on your local machine when you installed GCP. First, setup the DiVa360 endpoint:
+```
+diva360_ep=8ac249c5-8d25-4faa-9247-745d0213c615
+```
+Next, setup your personal endpoint for your local machine:
+```
+globus endpoint local-id
+personal_ep=<output of the above command>
+```
+**Important Note: To transfer to your GCP endpoint, the GCP software must be running and connected for the transfer to complete. However, you can close your terminal after the transfer has started.**
+
+### Download
+Downloading raw data (note that this is a total of 1.4 TB of data):
+```
+# Download all raw data
+globus transfer $diva360_ep:/raw_data/ $personal_ep:<path to destination> --recursive
+globus transfer $diva360_ep:/raw_data_long/ $personal_ep:<path to destination> --recursive
+
+# Downloading a single sequence
+globus transfer $diva360_ep:/raw_data/synced/2023-05-02_session_<sequence>_synced.tar.gz $personal_ep:<path to destination>/2023-05-02_session_<sequence>_synced.tar.gz
+globus transfer $diva360_ep:/raw_data_long/synced/2023-10-21_session_<sequence>_synced.tar.gz $personal_ep:<path to destination>/2023-10-21_session_<sequence>_synced.tar.gz
+```
+Downloading processed data (note that this is a total of 1.8 TB of data):
+```
+# Download all processed data
+globus transfer $diva360_ep:/processed_data/ $personal_ep:<path to destination> --recursive
+globus transfer $diva360_ep:/processed_data_long/ $personal_ep:<path to destination> --recursive
+
+# Downloading a single sequence
+globus transfer $diva360_ep:/processed_data/<sequence>/ $personal_ep:<path to destination> --recursive
+globus transfer $diva360_ep:/processed_data_long/<sequence>/ $personal_ep:<path to destination> --recursive
+```
+Downloading trained models (note that this is a total of 6 TB of data):
+```
+globus transfer $diva360_ep:/model_data/ $personal_ep:<path to destination> --recursive
+globus transfer $diva360_ep:/model_data_long/ $personal_ep:<path to destination> --recursive
+globus transfer $diva360_ep:/model_data_exp/ $personal_ep:<path to destination> --recursive
+```
+Downloading rendered videos (note that this is a total of 63.1 GB of data):
+```
+globus transfer $diva360_ep:/all_videos/ $personal_ep:<path to destination> --recursive
+```
+You can also transfer multiple files or folders at once using the batch transfer feature. Here is an example:
+```
+globus transfer --batch batch_transfer.txt $diva360_ep $personal_ep
+```
+Assuming you have the following `batch_transfer.txt` file:
+```
+# Copy a file
+<path to file> <path to destination>/<file name>
+
+# Copy a folder
+<path to folder> <path to destination>/<folder name> --recursive
+```
+To check the status of your transfer, use the following command:
+```
+globus task show <task ID>
+```
+
+### Sequences
+<details>
+<summary>Here are a list of sequences</summary>
+    <div style="display: flex; flex-direction: row;">
+        <div>
+            <ul style="list-style: none;">
+                <li>battery</li>
+                <li>blue_car</li>
+                <li>bunny</li>
+                <li>chess</li>
+                <li>clock</li>
+                <li>dog</li>
+                <li>drum</li>
+                <li>flip_book</li>
+                <li>horse</li>
+                <li>hour_glass</li>
+                <li>jenga</li>
+                <li>k1_double_punch</li>
+                <li>k1_hand_stand</li>
+                <li>k1_push_up</li>
+                <li>keyboard_mouse</li>
+                <li>kindle</li>
+            </ul>
+        </div>
+        <div>
+            <ul style="list-style: none;">
+                <li>maracas</li>
+                <li>music_box</li>
+                <li>pan</li>
+                <li>peel_apple</li>
+                <li>penguin</li>
+                <li>piano</li>
+                <li>plasma_ball</li>
+                <li>plasma_ball_clip</li>
+                <li>poker</li>
+                <li>pour_salt</li>
+                <li>pour_tea</li>
+                <li>put_candy</li>
+                <li>put_fruit</li>
+                <li>red_car</li>
+                <li>scissor</li>
+            </ul>
+        </div>
+        <div>
+            <ul style="list-style: none;">
+                <li>slice_apple</li>
+                <li>soda</li>
+                <li>stirling</li>
+                <li>tambourine</li>
+                <li>tea</li>
+                <li>tornado</li>
+                <li>trex</li>
+                <li>truck</li>
+                <li>unlock</li>
+                <li>wall_e</li>
+                <li>wolf</li>
+                <li>world_globe</li>
+                <li>writing_1</li>
+                <li>writing_2</li>
+                <li>xylophone</li>
+            </ul>
+        </div>
+    </div>
+</details>
+
+<details>
+<summary>Here are a list of long sequences</summary>
+    <div style="display: flex; flex-direction: row;">
+        <div>
+            <ul style="list-style: none;">
+                <li>chess_long</li>
+                <li>crochet</li>
+            </ul>
+        </div>
+        <div>
+            <ul style="list-style: none;">
+                <li>jenga_long</li>
+                <li>legos</li>
+            </ul>
+        </div>
+        <div>
+            <ul style="list-style: none;">
+                <li>origami</li>
+                <li>painting</li>
+            </ul>
+        </div>
+        <div>
+            <ul style="list-style: none;">
+                <li>puzzle</li>
+                <li>rubiks_cube</li>
+            </ul>
+        </div>
+    </div>
+</details>
+
 
 ## Benchmark Methods
 Please consider citing these methods if you think they are helpful! Below are methods modified for DiVa360 benchmarks.
@@ -161,11 +328,11 @@ Please consider citing these methods if you think they are helpful! Below are me
 ## Using existing data
 ### Take the blue car as an example.
 ```
-# download processed data
-aws s3 cp s3://diva360/processed_data/blue_car/ . --recursive --no-sign-request --exclude "*" --include "transforms*"
-aws s3 cp s3://diva360/processed_data/blue_car/frames_1.tar.gz ./ --no-sign-request
+# Download processed data
+globus transfer --exclude "*" --include "transforms*" $diva360_ep:/processed_data/blue_car $personal_ep:<path to destination> --recursive
+globus transfer $diva360_ep:/processed_data/blue_car/frames_1.tar.gz $personal_ep:<path to destination>/frames_1.tar.gz --recursive
 
-# please refer to the directory structure section
+# Please refer to the directory structure section
 cp -r frames_1 ../code/DiVa360/assets/objects/blue_car/
 cp transforms_* ../code/DiVa360/assets/objects/blue_car/
 ```
@@ -220,41 +387,38 @@ You can also preprocess raw data by yourself.
 
 Download raw data from s3:
 ```
-# list files
-aws s3 ls s3://diva360/raw_data/synced/ --no-sign-request
+# Download raw data
+globus transfer $diva360_ep:/raw_data/synced/2023-05-02_session_blue_car_synced.tar.gz $personal_ep:<path to destination>/2023-05-02_session_blue_car_synced.tar.gz --recursive
 
-# download raw data
-aws s3 cp s3://diva360/raw_data/synced/2023-05-03_session_blue_car_synced.tar.gz ./ --no-sign-request
+# Decompress file
+gzip -d 2023-05-02_session_blue_car_synced.tar.gz
+tar -xf 2023-05-02_session_blue_car_synced.tar	
 
-# decompress file
-gzip -d 2023-05-03_session_blue_car_synced.tar.gz
-tar -xf 2023-05-03_session_blue_car_synced.tar	
-
-# extract frames from the video
-object_scripts/blue_car/move.sh [DATA_PATH]/2023-05-03_session_blue_car_synced/synced
+# Extract frames from the video
+object_scripts/blue_car/move.sh <data path>/2023-05-02_session_blue_car_synced/synced
 ```
 
 Camera pose estimation
 ```
-# download data for pose estimation
-aws s3 cp s3://diva360/raw_data/2023-04-29_session_calibration_2.tar ./ --no-sign-request
+# Download data for pose estimation
+globus transfer $diva360_ep:/raw_data/2023-04-29_session_calibration_2.tar $personal_ep:<path to destination>/2023-04-29_session_calibration_2.tar
 tar -xf 2023-04-29_session_calibration_2.tar
 
-# if you are using long-duration object, download this one instead
-aws s3 cp s3://diva360/raw_data_long/2023-10-21_session_calib.tar.gz ./ --no-sign-request
+# If you are using long-duration object, download this one instead
+globus transfer  $diva360_ep:/raw_data_long/2023-10-21_session_calib.tar.gz $personal_ep:<path to destination>/2023-10-21_session_calib.tar
 gzip -d 2023-10-21_session_calib.tar.gz
 tar -xf 2023-10-21_session_calib.tar
 
-# run pose estimation with colmap version 3.8
-python src/colmap_calib.py -r [DATA_PATH]/2023-04-29_session_calibration_2
+# Run pose estimation with colmap version 3.8
+python src/colmap_calib.py -r <data path>/2023-04-29_session_calibration_2
 
-# please refer to the directory structure section
-mv [DATA_PATH]/2023-04-29_session_calibration_2/params.txt assets/calib_short/
+# Please refer to the directory structure section
+mv <data path>/2023-04-29_session_calibration_2/params.txt assets/calib_short/
 ```
 
 Camera pose refinement through I-NGP (please compile the I-NGP from the benchmark method)
 ```
-# manually segment one frame and put it in calib_short
+# Manually segment one frame and put it in calib_short
 python src/refine_params.py --root_dir assets/calib_short/ --optimize_params --network ../models/instant-ngp/configs/nerf/base.json --roi 0.5 0.45 0.5 --n_steps 10000 --aabb_scale 4 --face_to_cam --gui
 
 # optim_param.txt to transform.json
