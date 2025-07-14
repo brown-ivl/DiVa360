@@ -149,8 +149,8 @@ aws s3 ls s3://diva360/raw_data/synced/ --no-sign-request
 aws s3 cp s3://diva360/raw_data/synced/2023-05-03_session_blue_car_synced.tar.gz ./ --no-sign-request
 ``` -->
 
-## Instruction for Downloading DiVa360 from AWS S3
-### Setup
+## Instruction for Downloading DiVa360
+<!-- ### Setup
 We store our dataset on Globus, so to download the data to your local machine, we use Globus Command Line Interface (Globus-CLI) and Globus Connect Personal (GCP). You will first need to install GCP. Follow these intructions depending on your machine: [Mac](https://docs.globus.org/globus-connect-personal/install/mac/), [Windows](https://docs.globus.org/how-to/globus-connect-personal-windows/), [Linux](https://docs.globus.org/how-to/globus-connect-personal-linux/).
 
 Note: When you are installing GCP, you will have to name your collection/endpoint. You are free to name it however you choose, but we suggest naming it "&lt;name&gt; personal machine". 
@@ -218,7 +218,12 @@ Assuming you have the following `batch_transfer.txt` file:
 To check the status of your transfer, use the following command:
 ```
 globus task show <task ID>
-```
+``` -->
+You can download the data [here](https://www.dropbox.com/scl/fo/j68f78vlzt9q2z334294u/AHZ7i6znu9zQJXhs3n1Pmko?rlkey=7e59p9e9ex8lakyuslrhg9afj&st=l8nplh0l&dl=0). Please note that the dataset is large. Here is a breakdown of required storage:
+- Raw Data: 1.4 TB
+- Processed Data: 1.8 TB
+- Trained Models: 6 TB
+- Rendered Videos: 63.1 GB
 
 ### Sequences
 <details>
@@ -327,10 +332,10 @@ Please consider citing these methods if you think they are helpful! Below are me
 
 ## Using existing data
 ### Take the blue car as an example.
+<!-- globus transfer --exclude "*" --include "transforms*" $diva360_ep:/processed_data/blue_car $personal_ep:<path to destination> --recursive
+globus transfer $diva360_ep:/processed_data/blue_car/frames_1.tar.gz $personal_ep:<path to destination>/frames_1.tar.gz --recursive -->
 ```
 # Download processed data
-globus transfer --exclude "*" --include "transforms*" $diva360_ep:/processed_data/blue_car $personal_ep:<path to destination> --recursive
-globus transfer $diva360_ep:/processed_data/blue_car/frames_1.tar.gz $personal_ep:<path to destination>/frames_1.tar.gz --recursive
 
 # Please refer to the directory structure section
 cp -r frames_1 ../code/DiVa360/assets/objects/blue_car/
@@ -385,10 +390,10 @@ python utils/benchmark.py --root assets/objects/blue_car/ --start 0 --num_frames
 You can also preprocess raw data by yourself.
 ### Take the blue car as an example.
 
-Download raw data from s3:
+Download raw data:
+<!-- globus transfer $diva360_ep:/raw_data/synced/2023-05-02_session_blue_car_synced.tar.gz $personal_ep:<path to destination>/2023-05-02_session_blue_car_synced.tar.gz --recursive -->
 ```
 # Download raw data
-globus transfer $diva360_ep:/raw_data/synced/2023-05-02_session_blue_car_synced.tar.gz $personal_ep:<path to destination>/2023-05-02_session_blue_car_synced.tar.gz --recursive
 
 # Decompress file
 gzip -d 2023-05-02_session_blue_car_synced.tar.gz
@@ -399,13 +404,13 @@ object_scripts/blue_car/move.sh <data path>/2023-05-02_session_blue_car_synced/s
 ```
 
 Camera pose estimation
+<!-- globus transfer $diva360_ep:/raw_data/2023-04-29_session_calibration_2.tar $personal_ep:<path to destination>/2023-04-29_session_calibration_2.tar -->
+<!-- globus transfer  $diva360_ep:/raw_data_long/2023-10-21_session_calib.tar.gz $personal_ep:<path to destination>/2023-10-21_session_calib.tar -->
 ```
 # Download data for pose estimation
-globus transfer $diva360_ep:/raw_data/2023-04-29_session_calibration_2.tar $personal_ep:<path to destination>/2023-04-29_session_calibration_2.tar
 tar -xf 2023-04-29_session_calibration_2.tar
 
-# If you are using long-duration object, download this one instead
-globus transfer  $diva360_ep:/raw_data_long/2023-10-21_session_calib.tar.gz $personal_ep:<path to destination>/2023-10-21_session_calib.tar
+# If you are using long-duration object, download and untar this file instead
 gzip -d 2023-10-21_session_calib.tar.gz
 tar -xf 2023-10-21_session_calib.tar
 
